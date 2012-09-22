@@ -20,13 +20,14 @@ class User < ActiveRecord::Base
   # authenticate method is also added magically
   has_secure_password
 
-  # ensuring email uniqueness by downcasing the email attr.
-  before_save { |user| user.email = email.downcase }
+  # callback method ensuring email uniqueness by downcasing the email attr. before save
+  before_save { self.email.downcase! }
 
   validates :name, presence: true, length: { maximum: 50 }
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
+  validates :email, presence: true, 
+                    format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
 
   validates :password, presence: true, length: { minimum: 6 }
