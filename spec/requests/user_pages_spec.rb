@@ -111,10 +111,19 @@ describe "UserPages" do
     describe "when already signed in" do
       let(:user) { FactoryGirl.create(:user) }
       before { valid_signin(user) }
-      before { visit signup_path }
 
-      it { should_not have_title('Sign up') }
-      it { should have_title(user.name) }
+      describe "visit sign up page" do
+        before { visit signup_path }
+
+        it { should_not have_title('Sign up') }
+        it { should have_title(user.name) }
+      end
+      
+      describe "submitting a POST request to the User#create action" do
+        before { post users_path(user) }
+
+        specify { request.should redirect_to(user_path(user)) }
+      end
     end
   end
 

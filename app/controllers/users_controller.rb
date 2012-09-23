@@ -3,8 +3,8 @@ class UsersController < ApplicationController
   before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
   # ensure correct user is signed in
   before_filter :correct_user, only: [:edit, :update]
-  # ensure signed in user doesn't get to sign up page
-  before_filter :signed_in_user_on_new, only: [:new]
+  # ensure signed in user doesn't get to sign up page, or create action
+  before_filter :signed_in_user_on_new_or_create, only: [:new, :create]
   # ensure users cannot send DELETE requests through command line
   before_filter :admin_user, only: [:destroy]
 
@@ -70,11 +70,12 @@ class UsersController < ApplicationController
       redirect_to root_path unless current_user?(@user)
     end
 
-    def signed_in_user_on_new
+    def signed_in_user_on_new_or_create
       redirect_to current_user if signed_in?
     end
 
     def admin_user
-      redirect_to root_path unless current_user.admin?
+      @user = User.find(params[:id])
+      redirect_to root_path if !current_user.admin? || current_user?(@user)
     end
 end
