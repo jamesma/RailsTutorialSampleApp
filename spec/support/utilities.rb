@@ -3,9 +3,12 @@ include ApplicationHelper
 # RSpec custom matchers (as opposed to Cucumber), see 8.3.3 at 
 # http://ruby.railstutorial.org/chapters/sign-in-sign-out#sec-rspec_custom_matchers
 def valid_signin(user)
+  visit signin_path
   fill_in "Email",    with: user.email
   fill_in "Password", with: user.password
   click_button "Sign in"
+  # signin when not using Capybara as well
+  cookies[:remember_token] = user.remember_token
 end
 
 def valid_signup
@@ -13,6 +16,14 @@ def valid_signup
   fill_in "Email",          with: "user@example.com"
   fill_in "Password",       with: "foobar"
   fill_in "Confirmation",   with: "foobar"
+end
+
+def valid_edit_user user, new_name, new_email
+  fill_in "Name",             with: new_name
+  fill_in "Email",            with: new_email
+  fill_in "Password",         with: user.password
+  fill_in "Confirmation",     with: user.password
+  click_button "Save changes"
 end
 
 RSpec::Matchers.define :have_error_message do |message|
