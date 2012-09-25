@@ -14,6 +14,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   def index
@@ -56,14 +57,14 @@ class UsersController < ApplicationController
 
   private
 
-    def signed_in_user
-      # friendly forwarding, store request.url under store_location method
-      unless signed_in?
-        store_location
-        # synonymous to flash[:notice] 
-        redirect_to signin_url, notice: "Please sign in."
-      end
-    end
+    #def signed_in_user
+    #  # friendly forwarding, store request.url under store_location method
+    #  unless signed_in?
+    #    store_location
+    #    # synonymous to flash[:notice] 
+    #    redirect_to signin_url, notice: "Please sign in."
+    #  end
+    #end
 
     def correct_user
       @user = User.find(params[:id])

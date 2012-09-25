@@ -22,6 +22,8 @@ class User < ActiveRecord::Base
   # authenticate method is also added magically
   has_secure_password
 
+  has_many :microposts, dependent: :destroy
+
   # callback method ensuring email uniqueness by downcasing the email attr. before save
   before_save { self.email.downcase! }
   before_save :create_remember_token
@@ -36,6 +38,10 @@ class User < ActiveRecord::Base
   validates :password, length: { minimum: 6 }
 
   validates :password_confirmation, presence: true
+
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
 
   private
 
