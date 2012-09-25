@@ -42,6 +42,26 @@ describe "MicropostPages" do
         expect { click_link "delete" }.to change(Micropost, :count).by(-1)
       end
     end
+
+    describe "as wrong user" do
+      let(:wrong_user) { FactoryGirl.create(:user) }
+
+      describe "submitting to the destroy action on micropost created by another user" do
+        before { delete micropost_path(FactoryGirl.create(:micropost, user: user)) }
+        specify { response.should redirect_to(root_path) }
+      end
+
+      describe "delete link" do
+        before do 
+          FactoryGirl.create(:micropost, user: wrong_user)
+          visit user_path(wrong_user)
+        end
+
+        it "should not be displayed" do
+          page.should_not have_link("delete")
+        end
+      end
+    end
   end
 
   describe "pagination" do
