@@ -43,4 +43,52 @@ describe "MicropostPages" do
       end
     end
   end
+
+  describe "pagination" do
+
+    describe "on home page" do
+      before { visit root_path }
+      before(:all) { 50.times { FactoryGirl.create(:micropost, user: user) }  }
+      after(:all) { User.delete_all }
+
+      it { should have_selector('div.pagination') }
+
+      it "should list each micropost" do
+        Micropost.paginate(page: 1).each do |item|
+          page.should have_selector('li', text: item.content)
+        end
+      end
+    end
+
+    describe "on profile page" do
+      before { visit user_path(user) }
+      before(:all) { 50.times { FactoryGirl.create(:micropost, user: user) }  }
+      after(:all) { User.delete_all }
+
+      it { should have_selector('div.pagination') }
+
+      it "should list each micropost" do
+        Micropost.paginate(page: 1).each do |item|
+          page.should have_selector('li', text: item.content)
+        end
+      end
+    end
+  end
 end
+
+
+=begin
+describe "pagination" do
+
+      before(:all) { 30.times { FactoryGirl.create(:user) } }
+      after(:all) { User.delete_all }
+
+      it { should have_selector('div.pagination') }
+
+      it "should list each user" do
+        User.paginate(page: 1).each do |user|
+          page.should have_selector('li', text: user.name)
+        end
+      end
+    end
+=end
