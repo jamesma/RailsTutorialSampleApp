@@ -54,16 +54,16 @@ class User < ActiveRecord::Base
 
   def following?(other_user)
     # equivalent to self.relationships...
-    relationships.find_by_followed_id(other_user.id)
+    self.relationships.find_by_followed_id(other_user.id)
   end
 
   def follow!(other_user)
     # equivalent to self.relationships...
-    relationships.create!(followed_id: other_user.id)
+    self.relationships.create!(followed_id: other_user.id)
   end
 
   def unfollow!(other_user)
-    relationships.find_by_followed_id(other_user.id).destroy
+    self.relationships.find_by_followed_id(other_user.id).destroy
   end
 
   private
