@@ -2,14 +2,16 @@
 #
 # Table name: users
 #
-#  id              :integer          not null, primary key
-#  name            :string(255)
-#  email           :string(255)
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  password_digest :string(255)
-#  remember_token  :string(255)
-#  admin           :boolean          default(FALSE)
+#  id                     :integer          not null, primary key
+#  name                   :string(255)
+#  email                  :string(255)
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  password_digest        :string(255)
+#  remember_token         :string(255)
+#  admin                  :boolean          default(FALSE)
+#  password_reset_token   :string(255)
+#  password_reset_sent_at :datetime
 #
 
 class User < ActiveRecord::Base
@@ -35,7 +37,7 @@ class User < ActiveRecord::Base
 
   # callback method ensuring email uniqueness by downcasing the email attr. before save
   before_save { self.email.downcase! }
-  before_save :create_remember_token
+  before_save { create_token(:remember_token) }
 
   validates :name, presence: true, length: { maximum: 50 }
 
@@ -66,9 +68,16 @@ class User < ActiveRecord::Base
     self.relationships.find_by_followed_id(other_user.id).destroy
   end
 
+  def send_password_reset
+    create_token(:password_reset_token)
+    self.password_reset_sent_at = Time.zone.now
+    save! validate: false
+    UserMailer.password_reset(self).deliver
+  end
+
   private
 
-    def create_remember_token
-      self.remember_token = SecureRandom.urlsafe_base64
+    def create_token(column)
+      self[column] = SecureRandom.urlsafe_base64
     end
 end
