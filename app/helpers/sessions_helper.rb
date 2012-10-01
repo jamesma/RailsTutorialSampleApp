@@ -15,6 +15,10 @@ module SessionsHelper
     !current_user.nil?
   end
 
+  def confirmed_user?
+    !current_user.nil? && current_user.user_state?
+  end
+
   def current_user=(user)
     @current_user = user
   end

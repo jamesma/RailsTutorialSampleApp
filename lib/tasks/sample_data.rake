@@ -13,15 +13,17 @@ def make_users
                        password: "foobar",
                        password_confirmation: "foobar")
   admin.toggle!(:admin) # make first user an admin by default
+  admin.toggle!(:user_state)
 
   99.times do |n|
     name  = Faker::Name.name
     email = "example-#{n+1}@railstutorial.org"
     password  = "password"
-    User.create!(name: name,
+    user = User.create!(name: name,
                  email: email,
                  password: password,
                  password_confirmation: password)
+    user.toggle!(:user_state)
   end
 end
 

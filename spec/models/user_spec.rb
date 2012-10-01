@@ -12,6 +12,8 @@
 #  admin                  :boolean          default(FALSE)
 #  password_reset_token   :string(255)
 #  password_reset_sent_at :datetime
+#  email_confirm_token    :string(255)
+#  user_state             :boolean
 #
 
 require 'spec_helper'

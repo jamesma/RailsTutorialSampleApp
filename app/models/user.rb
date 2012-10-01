@@ -12,6 +12,8 @@
 #  admin                  :boolean          default(FALSE)
 #  password_reset_token   :string(255)
 #  password_reset_sent_at :datetime
+#  email_confirm_token    :string(255)
+#  user_state             :boolean
 #
 
 class User < ActiveRecord::Base
@@ -38,6 +40,9 @@ class User < ActiveRecord::Base
   # callback method ensuring email uniqueness by downcasing the email attr. before save
   before_save { self.email.downcase! }
   before_save { create_token(:remember_token) }
+
+  # default user_state is false, users need to verify email
+  after_create { set_user_state_false }
 
   validates :name, presence: true, length: { maximum: 50 }
 
@@ -73,6 +78,17 @@ class User < ActiveRecord::Base
     self.password_reset_sent_at = Time.zone.now
     save! validate: false
     UserMailer.password_reset(self).deliver
+  end
+
+  def send_email_confirm
+    create_token(:email_confirm_token)
+    save! validate: false
+    UserMailer.email_confirm(self).deliver
+  end
+
+  def set_user_state_false
+    self.toggle!(:user_state)
+    self.toggle!(:user_state)
   end
 
   private

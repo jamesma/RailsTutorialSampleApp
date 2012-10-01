@@ -5,7 +5,10 @@ describe "MicropostPages" do
   subject { page }
 
   let(:user) { FactoryGirl.create(:user) }
-  before { valid_signin user }
+  before do
+    valid_signin user
+    user.toggle!(:user_state)
+  end
 
   describe "micropost creation" do
     before { visit root_path }
