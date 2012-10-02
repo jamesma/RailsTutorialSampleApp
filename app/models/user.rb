@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
 
   # callback method ensuring email uniqueness by downcasing the email attr. before save
   before_save { self.email.downcase! }
-  before_save { create_token(:remember_token) }
+  before_save { create_token(:remember_token) if self[:remember_token].nil? }
 
   # default user_state is false, users need to verify email
   after_create { set_user_state_false }

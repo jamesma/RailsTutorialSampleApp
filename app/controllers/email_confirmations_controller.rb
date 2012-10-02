@@ -1,10 +1,6 @@
 class EmailConfirmationsController < ApplicationController
-  def new
-  end
-
   def create
-    user = User.find_by_email(params[:email].downcase)
-    user.send_email_confirm if user
+    current_user.send_email_confirm if current_user
     flash[:success] = "Email sent with confirmation instructions"
     redirect_to root_url
   end

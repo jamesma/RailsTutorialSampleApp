@@ -8,7 +8,7 @@ SampleApp::Application.routes.draw do
   resources :microposts,          only: [:create, :destroy]
   resources :relationships,       only: [:create, :destroy]
   resources :password_resets,     only: [:new, :create, :edit, :update]
-  resources :email_confirmations, only: [:new, :create, :edit]
+  resources :email_confirmations, only: [:create, :edit]
 
   root to: 'static_pages#home'
 
